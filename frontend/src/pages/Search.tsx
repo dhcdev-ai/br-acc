@@ -1,50 +1,39 @@
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 
+import { searchEntities, type SearchResult } from "@/api/client";
+import { SearchBar, type SearchParams } from "@/components/search/SearchBar";
+import { SearchResults } from "@/components/search/SearchResults";
+
 export function Search() {
   const { t } = useTranslation();
-  const [query, setQuery] = useState("");
+  const [results, setResults] = useState<SearchResult[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [hasSearched, setHasSearched] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
-  const handleSearch = (e: React.FormEvent) => {
-    e.preventDefault();
-    // TODO: connect to API
-    console.log("Search:", query);
+  const handleSearch = async (params: SearchParams) => {
+    setIsLoading(true);
+    setError(null);
+    try {
+      const response = await searchEntities(params.query, params.type);
+      setResults(response.items);
+      setHasSearched(true);
+    } catch {
+      setError(t("search.error"));
+      setResults([]);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
-    <div>
-      <form onSubmit={handleSearch} style={{ display: "flex", gap: "var(--space-sm)" }}>
-        <input
-          type="text"
-          value={query}
-          onChange={(e) => setQuery(e.target.value)}
-          placeholder={t("search.placeholder")}
-          style={{
-            flex: 1,
-            padding: "var(--space-sm) var(--space-md)",
-            background: "var(--bg-tertiary)",
-            border: "1px solid var(--border)",
-            color: "var(--text-primary)",
-            fontFamily: "var(--font-mono)",
-            fontSize: "var(--font-size-sm)",
-            borderRadius: "var(--radius-sm)",
-          }}
-        />
-        <button
-          type="submit"
-          style={{
-            padding: "var(--space-sm) var(--space-lg)",
-            background: "var(--accent)",
-            color: "var(--bg-primary)",
-            border: "none",
-            fontFamily: "var(--font-mono)",
-            cursor: "pointer",
-            borderRadius: "var(--radius-sm)",
-          }}
-        >
-          {t("search.button")}
-        </button>
-      </form>
+    <div style={{ display: "flex", flexDirection: "column", gap: "var(--space-lg)" }}>
+      <SearchBar onSearch={handleSearch} isLoading={isLoading} />
+      {error && (
+        <p style={{ color: "var(--color-sanction)", textAlign: "center" }}>{error}</p>
+      )}
+      {hasSearched && !error && <SearchResults results={results} />}
     </div>
   );
 }

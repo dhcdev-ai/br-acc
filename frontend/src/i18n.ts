@@ -19,6 +19,9 @@ const resources = {
         placeholder: "CPF, CNPJ ou nome...",
         button: "Buscar",
         noResults: "Nenhum resultado encontrado.",
+        filterType: "Filtrar tipo",
+        typeAll: "Todos",
+        error: "Erro ao buscar. Tente novamente.",
       },
       entity: {
         person: "Pessoa",
@@ -55,6 +58,9 @@ const resources = {
         placeholder: "CPF, CNPJ, or name...",
         button: "Search",
         noResults: "No results found.",
+        filterType: "Filter type",
+        typeAll: "All",
+        error: "Search failed. Please try again.",
       },
       entity: {
         person: "Person",
