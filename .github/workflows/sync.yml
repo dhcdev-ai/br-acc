@@ -1,0 +1,34 @@
+name: 'Sincronização Automática'
+
+on:
+  schedule:
+    - cron: '0 0 * * *' # Roda todos os dias à meia-noite (UTC)
+  workflow_dispatch:   # Permite que você rode manualmente clicando em um botão
+
+jobs:
+  sync_latest_from_upstream:
+    runs-on: ubuntu-latest
+    name: Sincronizar commits do repositório original
+
+    steps:
+      # Etapa 1: Checkout do seu repositório (o fork)
+      - name: Checkout target repo
+        uses: actions/checkout@v3
+        with:
+          ref: main # Ajuste para 'master' se o projeto original usar master
+          persist-credentials: false
+
+      # Etapa 2: Sincronização com o repositório original (upstream)
+      - name: Sync upstream changes
+        id: sync
+        uses: aormsby/Fork-Sync-With-Upstream-action@v3.4.1
+        with:
+          target_sync_branch: main # Branch no seu GitHub que receberá os updates
+          target_repo_token: ${{ secrets.GITHUB_TOKEN }}
+          upstream_sync_branch: main # Branch original que você quer copiar
+          upstream_sync_repo: brunoclz/br-acc # Dono e nome do repo original
+          
+      # Etapa 3: Log de confirmação (opcional)
+      - name: Verificar novos commits
+        if: steps.sync.outputs.has_new_commits == 'true'
+        run: echo "Novas atualizações foram sincronizadas com sucesso!"
