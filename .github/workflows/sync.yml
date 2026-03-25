@@ -1,4 +1,4 @@
-name: 'Sincronização Automática'
+name: 'Sincronização Automática - BR-ACC'
 
 on:
   schedule:
