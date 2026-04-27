@@ -9,11 +9,12 @@ jobs:
   sync_latest_from_upstream:
     runs-on: ubuntu-latest
     name: Sincronizar commits do repositório original
-
+    env:
+      FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
     steps:
       # Etapa 1: Checkout do seu repositório (o fork)
       - name: Checkout target repo
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           ref: main # Ajuste para 'master' se o projeto original usar master
           persist-credentials: false
@@ -21,7 +22,7 @@ jobs:
       # Etapa 2: Sincronização com o repositório original (upstream)
       - name: Sync upstream changes
         id: sync
-        uses: aormsby/Fork-Sync-With-Upstream-action@v3.4.1
+        uses: aormsby/Fork-Sync-With-Upstream-action@v3.4.3
         with:
           target_sync_branch: main # Branch no seu GitHub que receberá os updates
           target_repo_token: ${{ secrets.GITHUB_TOKEN }}
