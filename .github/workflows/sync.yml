@@ -13,7 +13,6 @@ jobs:
     # CRUCIAL: Permite que a Action grave no seu repositório
     permissions:
       contents: write
-      workflows: write
       
     env:
       # Garante compatibilidade com o ambiente do GitHub em 2026
