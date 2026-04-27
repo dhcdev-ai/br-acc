@@ -3,33 +3,33 @@ name: 'Sincronização Automática - BR-ACC'
 on:
   schedule:
     - cron: '0 0 * * *' # Roda todos os dias à meia-noite (UTC)
-  workflow_dispatch:   # Permite rodar manualmente
+  workflow_dispatch:   # Permite execução manual
 
 jobs:
   sync_latest_from_upstream:
     runs-on: ubuntu-latest
     name: Sincronizar commits do repositório original
     
-    # ADICIONADO: Permissões necessárias para que o GITHUB_TOKEN possa gravar no seu repo
+    # CRUCIAL: Permite que a Action grave no seu repositório
     permissions:
       contents: write
     
     env:
+      # Garante compatibilidade com o ambiente do GitHub em 2026
       FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
 
     steps:
       # Etapa 1: Checkout do seu repositório (o fork)
       - name: Checkout target repo
-        uses: actions/checkout@v4
+        uses: actions/checkout@v4 # Atualizado para v4
         with:
           ref: main 
-          # Alterado para true para que a Action de sincronização possa usar as credenciais
-          persist-credentials: true
+          persist-credentials: true # Alterado para true
 
       # Etapa 2: Sincronização com o repositório original (upstream)
       - name: Sync upstream changes
         id: sync
-        uses: aormsby/Fork-Sync-With-Upstream-action@v3.4.3
+        uses: aormsby/Fork-Sync-With-Upstream-action@v3.4.3 # Atualizado para v3.4.3
         with:
           target_sync_branch: main 
           target_repo_token: ${{ secrets.GITHUB_TOKEN }}
